@@ -31,10 +31,19 @@ async function index(req, res) {
   }
 }
 
+async function show(req, res) {
+  try {
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 
 
 
 module.exports = {
   createPlayer,
   index,
+  show,
 }
