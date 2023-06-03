@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
     team: DataTypes.STRING,
     transferFee: DataTypes.INTEGER,
     photo: DataTypes.STRING,
+    upVotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    downVotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
     profileId: DataTypes.INTEGER
   }, {
     sequelize,
