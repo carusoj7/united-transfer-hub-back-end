@@ -63,6 +63,22 @@ async function update(req, res) {
   }
 }
 
+async function deletePlayer(req, res) {
+  try {
+    const playerId = req.params.playerId
+    const profile = await Profile.findOne({
+      where: { userId: req.user.id }
+    })
+    const player = await Player.findOne({
+      where: { id: playerId, profileId: profile.id}
+    })
+    await player.destroy()
+    res.status(200).json()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 
 
 module.exports = {
@@ -70,4 +86,5 @@ module.exports = {
   index,
   show,
   update,
+  delete: deletePlayer
 }
