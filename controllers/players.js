@@ -16,9 +16,25 @@ async function createPlayer(req, res) {
   }
 }
 
+async function index(req, res) {
+  try {
+    const profile = await Profile.findOne({ where: { userId: req.user.id } })
+    if (!profile) {
+      return res.status(500).json({ err: error })
+    }
+    const players = await Player.findAll({
+    order:[[ 'createdAt', "DESC"]]
+    })
+    res.status(200).json(players)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 
 
 
 module.exports = {
-  createPlayer
+  createPlayer,
+  index,
 }
