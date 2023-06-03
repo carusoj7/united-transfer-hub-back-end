@@ -33,7 +33,15 @@ async function index(req, res) {
 
 async function show(req, res) {
   try {
-
+    const profile = await Profile.findOne({ where: { userId: req.user.id } })
+    if (!profile) {
+      return res.status(500).json({ err: error })
+    }
+    const playerId = req.params.id
+    const player = await Player.findOne({
+      where: {id: playerId}
+    })
+    res.status(200).json(player)
   } catch (error) {
     console.log(error)
   }
