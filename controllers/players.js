@@ -37,7 +37,7 @@ async function show(req, res) {
     if (!profile) {
       return res.status(500).json({ err: error })
     }
-    const playerId = req.params.id
+    const playerId = req.params.playerId
     const player = await Player.findOne({
       where: {id: playerId}
     })
@@ -47,6 +47,21 @@ async function show(req, res) {
   }
 }
 
+async function update(req, res) {
+  try {
+    const playerId = req.params.playerId
+    const profile = await Profile.findOne({
+      where: { userId: req.user.id }
+    })
+    const player = await Player.findOne({
+      where: { id: playerId, profileId: profile.id}
+    })
+    await player.update(req.body)
+    res.status(200).json(player)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 
 
@@ -54,4 +69,5 @@ module.exports = {
   createPlayer,
   index,
   show,
+  update,
 }
