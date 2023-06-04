@@ -17,9 +17,22 @@ module.exports = {
           key: 'id'
         }
       },
-      type: {
-        type: Sequelize.ENUM('upvote, downvote')
+      profileId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Profiles',
+          key: 'id'
+        },
       },
+      upvotes: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+        },
+        downvotes: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+        },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

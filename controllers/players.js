@@ -1,4 +1,4 @@
-const { Player, Profile } = require('../models')
+const { Player, Profile, Vote } = require('../models')
 
 async function createPlayer(req, res) {
   try {
@@ -39,7 +39,7 @@ async function show(req, res) {
     }
     const playerId = req.params.playerId
     const player = await Player.findOne({
-      where: {id: playerId}
+      where: {id: playerId, profileId: profile.id}
     })
     res.status(200).json(player)
   } catch (error) {
@@ -49,17 +49,59 @@ async function show(req, res) {
 
 async function update(req, res) {
   try {
-    const playerId = req.params.playerId
+    const playerId = req.params.playerId;
     const profile = await Profile.findOne({
       where: { userId: req.user.id }
-    })
+    });
     const player = await Player.findOne({
-      where: { id: playerId, profileId: profile.id}
-    })
-    await player.update(req.body)
-    res.status(200).json(player)
+      where: { id: playerId }
+    });
+
+    const existingUpVote = await Vote.findOne({
+      where: {
+        playerId: playerId,
+        profileId: profile.id
+      }
+    });
+
+    if (existingUpVote) {
+      if (existingUpVote.upvotes > 0) {
+        await existingUpVote.decrement('upvotes');
+        player.upvotes -= 1;
+      }
+    } else {
+      await Vote.create({
+        playerId: playerId, // Add the playerId when creating a new vote
+        profileId: profile.id
+      });
+      player.upvotes += 1;
+    }
+
+    const existingDownVote = await Vote.findOne({
+      where: {
+        playerId: playerId,
+        profileId: profile.id
+      }
+    });
+
+    if (existingDownVote) {
+      if (existingDownVote.downvotes > 0) {
+        await existingDownVote.decrement('downvotes');
+        player.downvotes -= 1;
+      }
+    } else {
+      await Vote.create({
+        playerId: playerId, // Add the playerId when creating a new vote
+        profileId: profile.id
+      });
+      player.downvotes += 1;
+    }
+
+    await player.save();
+    await player.update(req.body);
+    res.status(200).json(player);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
 

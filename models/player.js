@@ -21,11 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     team: DataTypes.STRING,
     transferFee: DataTypes.INTEGER,
     photo: DataTypes.STRING,
-    upVotes: {
+    upvotes: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
-    downVotes: {
+    downvotes: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },

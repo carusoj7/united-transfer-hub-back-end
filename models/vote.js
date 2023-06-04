@@ -19,12 +19,22 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    type: {
-      type: DataTypes.STRING,
-      validate: {
-        isIn: [['upvote', 'downvote']]
-      }
-    }, 
+    upvotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    downvotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    profileId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    playerId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'Vote',
