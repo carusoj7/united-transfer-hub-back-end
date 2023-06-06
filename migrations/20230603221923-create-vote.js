@@ -28,11 +28,11 @@ module.exports = {
       upvotes: {
         type: Sequelize.INTEGER,
         defaultValue: 0
-        },
-        downvotes: {
+      },
+      downvotes: {
         type: Sequelize.INTEGER,
         defaultValue: 0
-        },
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

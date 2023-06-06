@@ -1,4 +1,4 @@
-const { Player, Profile, Vote } = require('../models')
+const { Player, Profile, } = require('../models')
 
 async function createPlayer(req, res) {
   try {
@@ -50,56 +50,18 @@ async function show(req, res) {
 async function update(req, res) {
   try {
     const playerId = req.params.playerId;
-    const profile = await Profile.findOne({
-      where: { userId: req.user.id }
-    });
-    const player = await Player.findOne({
-      where: { id: playerId }
-    });
+    const profile = await Profile.findOne({ where: { userId: req.user.id } });
+    const player = await Player.findOne({ where: { id: playerId, profileId: profile.id } });
 
-    const existingUpVote = await Vote.findOne({
-      where: {
-        playerId: playerId,
-        profileId: profile.id
-      }
-    });
-
-    if (existingUpVote) {
-      if (existingUpVote.upvotes > 0) {
-        await existingUpVote.decrement('upvotes');
-        player.upvotes -= 1;
-      }
-    } else {
-      await Vote.create({
-        playerId: playerId, // Add the playerId when creating a new vote
-        profileId: profile.id
-      });
-      player.upvotes += 1;
+    if (!player) {
+      return res.status(404).json({ error: 'Player not found' });
     }
-
-    const existingDownVote = await Vote.findOne({
-      where: {
-        playerId: playerId,
-        profileId: profile.id
-      }
-    });
-
-    if (existingDownVote) {
-      if (existingDownVote.downvotes > 0) {
-        await existingDownVote.decrement('downvotes');
-        player.downvotes -= 1;
-      }
+    if (player.profileId === profile.id) {
+      await player.update(req.body);
+      res.status(200).json(player);
     } else {
-      await Vote.create({
-        playerId: playerId, // Add the playerId when creating a new vote
-        profileId: profile.id
-      });
-      player.downvotes += 1;
+      res.status(403).json({ error: 'Unauthorized' });
     }
-
-    await player.save();
-    await player.update(req.body);
-    res.status(200).json(player);
   } catch (error) {
     console.log(error);
   }
