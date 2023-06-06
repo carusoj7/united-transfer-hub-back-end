@@ -1,4 +1,4 @@
-const { Player, Profile, } = require('../models')
+const { Player, Profile } = require('../models');
 
 async function createPlayer(req, res) {
   try {
@@ -6,8 +6,9 @@ async function createPlayer(req, res) {
     if (!profile) {
       return res.status(500).json({ err: error })
     }
+    const { id, ...playerData } = req.body
     const player = await Player.create({
-      ...req.body,
+      ...playerData,
       profileId: profile.id
     })
     res.status(200).json(player)
