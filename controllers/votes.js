@@ -1,5 +1,20 @@
 const { Player, Profile, Vote } = require('../models')
 
+async function getVotesForPlayer(req, res) {
+  try {
+    const playerId = req.params.playerId
+    const votes = await Vote.findAll({
+      where: {
+        playerId: playerId
+      },
+      attributes: ['id', 'upvotes', 'downvotes', 'profileId', 'playerId', 'createdAt', 'updatedAt']
+    })
+    res.status(200).json(votes)
+  } catch (error){
+    console.log(error)
+  }
+}
+
 async function vote(req, res) {
   try {
     const playerId = req.params.playerId
@@ -60,5 +75,6 @@ async function vote(req, res) {
 }
 
 module.exports = {
-  vote
+  vote,
+  getVotesForPlayer
 }

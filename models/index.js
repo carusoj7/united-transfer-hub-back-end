@@ -53,6 +53,9 @@ Object.keys(db).forEach(modelName => {
   }
 })
 
+db.Vote.associate(db)
+db.Player.associate(db)
+
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 

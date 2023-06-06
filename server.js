@@ -24,7 +24,7 @@ app.use(formData.parse())
 app.use('/api/profiles', profilesRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/players', playerRouter)
-app.use('/api/vote', voteRouter)
+app.use('/api/votes', voteRouter)
 
 
 // handle 404 errors

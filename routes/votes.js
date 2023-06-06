@@ -6,7 +6,8 @@ const { decodeUserFromToken, checkAuth } = middleware
 
 // ========= Protected Routes ========= 
 router.use(decodeUserFromToken)
-router.post('/:playerId/vote', checkAuth, votesCtrl.vote)
+router.get('/:playerId', checkAuth, votesCtrl.getVotesForPlayer )
+router.post('/:playerId/votes', checkAuth, votesCtrl.vote)
 
 
 

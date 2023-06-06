@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Player.belongsTo(models.Profile, { foreignKey: 'profileId'})
+      Player.hasMany(models.Vote)
     }
   }
   Player.init({

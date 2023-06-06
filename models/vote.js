@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Vote.belongsTo(models.Player, { foreignKey: 'playerId' })
     }
   }
   Vote.init({
@@ -33,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     playerId: {
       type: DataTypes.INTEGER,
+      field: 'playerId',
       allowNull: false,
     }
   }, {
