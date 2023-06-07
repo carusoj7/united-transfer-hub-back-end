@@ -25,6 +25,12 @@ module.exports = {
       transferFee: {
         type: Sequelize.INTEGER
       },
+      upvotes: {
+        type: Sequelize.INTEGER
+      },
+      downvotes: {
+        type: Sequelize.INTEGER
+      },
       photo: {
         type: Sequelize.STRING
       },

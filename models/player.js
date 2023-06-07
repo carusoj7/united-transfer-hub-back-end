@@ -22,7 +22,14 @@ module.exports = (sequelize, DataTypes) => {
     team: DataTypes.STRING,
     transferFee: DataTypes.INTEGER,
     photo: DataTypes.STRING,
-    vote: DataTypes.JSON,
+    upvotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    downvotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
     profileId: DataTypes.INTEGER
   }, {
     sequelize,

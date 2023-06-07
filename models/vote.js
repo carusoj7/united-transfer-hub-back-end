@@ -20,14 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    upvotes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
-    downvotes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
     profileId: {
       type: DataTypes.INTEGER,
       allowNull: false,

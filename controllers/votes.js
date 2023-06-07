@@ -7,7 +7,10 @@ async function getVotesForPlayer(req, res) {
       where: {
         playerId: playerId
       },
-      attributes: ['id', 'upvotes', 'downvotes', 'profileId', 'playerId', 'createdAt', 'updatedAt']
+      include: {
+        model: Player,
+        attributes: ['upvotes', 'downvotes']
+      }
     });
     res.status(200).json(votes);
   } catch (error) {
@@ -24,18 +27,12 @@ async function upvote(playerId, profileId) {
   });
 
   if (existingVote) {
-    if (existingVote.voteType === 'upvote') {
-      await existingVote.destroy();
-      return { upvotes: -1, downvotes: 0 };
-    } else {
-      await existingVote.update({ voteType: 'upvote' });
-      return { upvotes: 1, downvotes: -1 };
-    }
+    await existingVote.destroy();
+    return { upvotes: -1, downvotes: 0 };
   } else {
     await Vote.create({
       playerId: playerId,
       profileId: profileId,
-      voteType: 'upvote',
     });
     return { upvotes: 1, downvotes: 0 };
   }
@@ -50,18 +47,12 @@ async function downvote(playerId, profileId) {
   });
 
   if (existingVote) {
-    if (existingVote.voteType === 'downvote') {
-      await existingVote.destroy();
-      return { upvotes: 0, downvotes: -1 };
-    } else {
-      await existingVote.update({ voteType: 'downvote' });
-      return { upvotes: -1, downvotes: 1 };
-    }
+    await existingVote.destroy();
+    return { upvotes: 0, downvotes: -1 };
   } else {
     await Vote.create({
       playerId: playerId,
       profileId: profileId,
-      voteType: 'downvote',
     });
     return { upvotes: 0, downvotes: 1 };
   }
