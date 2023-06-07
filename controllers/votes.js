@@ -1,28 +1,29 @@
 const { Player, Profile, Vote } = require('../models');
 
-async function getVotesForPlayer(req, res) {
-  try {
-    const playerId = req.params.playerId;
-    const votes = await Vote.findAll({
-      where: {
-        playerId: playerId
-      },
-      include: {
-        model: Player,
-        attributes: ['upvotes', 'downvotes']
-      }
-    });
-    res.status(200).json(votes);
-  } catch (error) {
-    console.log(error);
-  }
+async function fetchVotes(playerId) {
+  const votes = await Vote.findAll({
+    where: {
+      profileId: playerId,
+    },
+    include: {
+      model: Player,
+      attributes: ['upvotes', 'downvotes']
+    },
+  });
+
+  const totalUpvotes = votes.reduce((acc, vote) => acc + vote.upvotes, 0);
+  const totalDownvotes = votes.reduce((acc, vote) => acc + vote.downvotes, 0);
+
+  return {
+    upvotes: totalUpvotes,
+    downvotes: totalDownvotes
+  };
 }
 
 async function upvote(playerId, profileId) {
   const existingVote = await Vote.findOne({
     where: {
-      playerId: playerId,
-      profileId: profileId,
+      profileId: playerId,
     },
   });
 
@@ -41,8 +42,7 @@ async function upvote(playerId, profileId) {
 async function downvote(playerId, profileId) {
   const existingVote = await Vote.findOne({
     where: {
-      playerId: playerId,
-      profileId: profileId,
+      profileId: playerId
     },
   });
 
@@ -58,47 +58,8 @@ async function downvote(playerId, profileId) {
   }
 }
 
-async function vote(req, res) {
-  try {
-    const playerId = req.params.playerId;
-    const profile = await Profile.findOne({ where: { userId: req.user.id } });
-    const player = await Player.findOne({ where: { id: playerId } });
-
-    let voteChanges = {};
-
-    if (req.body.voteType === 'upvote') {
-      voteChanges = await upvote(playerId, profile.id);
-    } else if (req.body.voteType === 'downvote') {
-      voteChanges = await downvote(playerId, profile.id);
-    }
-
-    player.upvotes += voteChanges.upvotes;
-    player.downvotes += voteChanges.downvotes;
-
-    await player.save();
-    res.status(200).json(player);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function updateVotesForPlayer(req, res) {
-  const playerId = req.params.playerId
-  const { upvotes, downvotes } = req.body
-  const player = await Player.findOne({ 
-    where: { id: playerId } })
-
-  player.upvotes = upvotes
-  player.downvotes = downvotes
-  await player.save()
-
-  return res.status(200).json(player)
-}
-
 module.exports = {
-  vote,
-  getVotesForPlayer,
-  downvote,
+  fetchVotes,
   upvote,
-  updateVotesForPlayer
+  downvote
 };
