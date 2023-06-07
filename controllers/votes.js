@@ -91,9 +91,23 @@ async function vote(req, res) {
   }
 }
 
+async function updateVotesForPlayer(req, res) {
+  const playerId = req.params.playerId
+  const { upvotes, downvotes } = req.body
+  const player = await Player.findOne({ 
+    where: { id: playerId } })
+
+  player.upvotes = upvotes
+  player.downvotes = downvotes
+  await player.save()
+
+  return res.status(200).json(player)
+}
+
 module.exports = {
   vote,
   getVotesForPlayer,
   downvote,
-  upvote
+  upvote,
+  updateVotesForPlayer
 };
