@@ -38,7 +38,7 @@ async function show(req, res) {
     if (!profile) {
       return res.status(500).json({ err: error })
     }
-    const playerId = req.params.playerId
+    const playerId = parseInt(req.params.playerId)
     const player = await Player.findOne({
       where: {id: playerId, profileId: profile.id}
     })
@@ -84,6 +84,68 @@ async function deletePlayer(req, res) {
   }
 }
 
+async function fetchVotes(playerId) {
+  try {
+    const player = await Player.findOne({
+      where: { id: playerId },
+      attributes: ['upvotes', 'downvotes'],
+    });
+
+    if (!player) {
+      return { upvotes: 0, downvotes: 0 };
+    }
+
+    return {
+      upvotes: player.upvotes || 0,
+      downvotes: player.downvotes || 0,
+    };
+  } catch (error) {
+    console.log(error);
+    return { upvotes: 0, downvotes: 0 };
+  }
+}
+
+async function upvote(playerId, profileId) {
+  try {
+    const player = await Player.findOne({ where: { id: playerId } });
+
+    if (!player) {
+      return { upvotes: 0, downvotes: 0 };
+    }
+
+    if (player.profileId === profileId) {
+      await player.increment('upvotes');
+      return { upvotes: player.upvotes + 1, downvotes: player.downvotes };
+    }
+
+    return { upvotes: player.upvotes, downvotes: player.downvotes };
+  } catch (error) {
+    console.log(error);
+    return { upvotes: 0, downvotes: 0 };
+  }
+}
+
+async function downvote(playerId, profileId) {
+  try {
+    const player = await Player.findOne({ where: { id: playerId } });
+
+    if (!player) {
+      return { upvotes: 0, downvotes: 0 };
+    }
+
+    if (player.profileId === profileId) {
+      await player.increment('downvotes');
+      return { upvotes: player.upvotes, downvotes: player.downvotes + 1 };
+    }
+
+    return { upvotes: player.upvotes, downvotes: player.downvotes };
+  } catch (error) {
+    console.log(error);
+    return { upvotes: 0, downvotes: 0 };
+  }
+}
+
+
 
 
 module.exports = {
@@ -91,5 +153,8 @@ module.exports = {
   index,
   show,
   update,
-  delete: deletePlayer
+  delete: deletePlayer,
+  fetchVotes,
+  upvote,
+  downvote
 }
