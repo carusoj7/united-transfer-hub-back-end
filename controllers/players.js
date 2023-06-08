@@ -34,27 +34,11 @@ async function index(req, res) {
   }
 }
 
-async function show(req, res) {
-  const profileId = req.user.profile.id;
-  try {
-    const profile = await Profile.findOne({ where: { userId: profileId } })
-    if (!profile) {
-      return res.status(500).json({ err: error })
-    }
-    const playerId = parseInt(req.params.playerId)
-    const player = await Player.findOne({
-      where: {id: playerId, profileId: profile.id}
-    })
-    res.status(200).json(player)
-  } catch (error) {
-    console.log(error)
-  }
-}
 
 async function update(req, res) {
   try {
     const playerId = req.params.playerId;
-    const profileId = requser.profile.id
+    const profileId = req.user.profile.id
     const profile = await Profile.findOne({ where: { userId: profileId } })
     const player = await Player.findOne({ where: { id: playerId, profileId: profile.id } })
 
@@ -92,7 +76,6 @@ async function deletePlayer(req, res) {
 module.exports = {
   createPlayer,
   index,
-  show,
   update,
   delete: deletePlayer,
 }
