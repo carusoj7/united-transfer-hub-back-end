@@ -13,7 +13,6 @@ router.post('/', checkAuth, playersCtrl.createPlayer)
 router.get('/', checkAuth, playersCtrl.index)
 router.put('/:playerId', checkAuth, playersCtrl.update)
 router.delete('/:playerId', checkAuth, playersCtrl.delete)
-
 router.put('/:playerid/add-photo', checkAuth, playersCtrl.addPlayerPhoto)
 router.get('/search/:searchTerm', checkAuth, playersCtrl.search)
 

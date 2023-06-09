@@ -28,7 +28,7 @@ async function index(req, res) {
       return res.status(500).json({ err: error })
     }
     const players = await Player.findAll({
-    order:[[ 'createdAt', "DESC"]]
+      order: [['createdAt', "DESC"]]
     })
     res.status(200).json(players)
   } catch (error) {
@@ -44,8 +44,8 @@ async function search(req, res) {
       return res.status(500).json({ err: error })
     }
     const players = await Player.findAll({
-      where:{name: {[Op.like]: `${req.params.searchTerm}%`}},
-    order:[[ 'createdAt', "DESC"]]
+      where: { name: { [Op.like]: `${req.params.searchTerm}%` } },
+      order: [['createdAt', "DESC"]]
     })
     res.status(200).json(players)
   } catch (error) {
@@ -83,7 +83,7 @@ async function deletePlayer(req, res) {
       where: { userId: profileId }
     })
     const player = await Player.findOne({
-      where: { id: playerId, profileId: profile.id}
+      where: { id: playerId, profileId: profile.id }
     })
     await player.destroy()
     res.status(200).json()
@@ -97,7 +97,7 @@ async function addPlayerPhoto(req, res) {
     const playerId = req.params.playerId;
     console.log("THIS IS WORKING");
     const imageFile = req.files.photo.path
-    const player = await Player.findOne({where: { id: playerId} })
+    const player = await Player.findOne({ where: { id: playerId } })
 
     const image = await cloudinary.uploader.upload(imageFile)
     console.log(imageFile, "image file");
