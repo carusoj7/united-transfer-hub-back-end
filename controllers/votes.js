@@ -18,6 +18,7 @@ async function fetchVotes(req, res) {
       where: { profileId, playerId }
     });
 console.log(count, 'upvote');
+
 console.log('1111111111111111  ');
     res.status(200).json({
       upvotes: count,
@@ -42,7 +43,7 @@ async function upvote(req, res) {
     console.log(existingVote);
 
     if (existingVote && existingVote.vote === 1) {
-      return res.status(200).json();
+      return res.status(200).json(existingVote);
     }
 
     if (existingVote) {

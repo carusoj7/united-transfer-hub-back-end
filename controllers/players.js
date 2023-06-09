@@ -1,4 +1,6 @@
+const { Op } = require('sequelize');
 const { Player, Profile } = require('../models');
+const cloudinary = require('cloudinary').v2
 
 async function createPlayer(req, res) {
   try {
@@ -26,6 +28,23 @@ async function index(req, res) {
       return res.status(500).json({ err: error })
     }
     const players = await Player.findAll({
+    order:[[ 'createdAt', "DESC"]]
+    })
+    res.status(200).json(players)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function search(req, res) {
+  try {
+    const profileId = req.user.profile.id;
+    const profile = await Profile.findOne({ where: { userId: profileId } })
+    if (!profile) {
+      return res.status(500).json({ err: error })
+    }
+    const players = await Player.findAll({
+      where:{name: {[Op.like]: `${req.params.searchTerm}%`}},
     order:[[ 'createdAt', "DESC"]]
     })
     res.status(200).json(players)
@@ -73,9 +92,32 @@ async function deletePlayer(req, res) {
   }
 }
 
+async function addPlayerPhoto(req, res) {
+  try {
+    console.log("THIS IS WORKING");
+    const imageFile = req.files.photo.path
+    const player = await Player.findOne(req.params.id)
+
+    const image = await cloudinary.uploader.upload(imageFile)
+    console.log(imageFile, "image file");
+    console.log(image.url)
+    console.log(player);;
+    player.photo = image.url
+
+    await player.save()
+    console.log(player, "FIND THIS");
+    res.status(201).json(player)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
 module.exports = {
   createPlayer,
   index,
   update,
   delete: deletePlayer,
+  addPlayerPhoto,
+  search,
 }
