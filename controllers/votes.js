@@ -17,9 +17,7 @@ async function fetchVotes(req, res) {
     const existingVote = await Vote.findOne({
       where: { profileId, playerId }
     });
-console.log(count, 'upvote');
 
-console.log('1111111111111111  ');
     res.status(200).json({
       upvotes: count,
       downvotes: downvotes.count,
@@ -40,7 +38,6 @@ async function upvote(req, res) {
       where: { profileId, playerId }
     });
 
-    console.log(existingVote);
 
     if (existingVote && existingVote.vote === 1) {
       return res.status(200).json(existingVote);
@@ -68,12 +65,10 @@ async function downvote(req, res) {
   try {
     const profileId = req.user.profile.id;
     const playerId = req.params.playerId;
-    console.log(req.user);
 
     const existingVote = await Vote.findOne({
       where: { profileId, playerId }
     });
-    console.log(existingVote);
 
     if (existingVote && existingVote.vote === -1) {
       return res.status(200).json();
