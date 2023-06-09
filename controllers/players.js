@@ -95,18 +95,13 @@ async function deletePlayer(req, res) {
 async function addPlayerPhoto(req, res) {
   try {
     const playerId = req.params.playerId;
-    console.log("THIS IS WORKING");
     const imageFile = req.files.photo.path
     const player = await Player.findOne({ where: { id: playerId } })
 
     const image = await cloudinary.uploader.upload(imageFile)
-    console.log(imageFile, "image file");
-    console.log(image.url)
-    console.log(player);;
     player.photo = image.url
 
     await player.save()
-    console.log(player, "FIND THIS");
     res.status(201).json(player)
   } catch (err) {
     console.log(err)
